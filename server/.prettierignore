@@ -1,0 +1,5 @@
+.*
+reference/*
+.stoplight/*
+Dockerfile
+node_modules/*

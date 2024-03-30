@@ -1,0 +1,801 @@
+swagger: '2.0'
+x-stoplight:
+  id: r4ajlq6r41v4h
+info:
+  title: Personal API
+  version: '1.0'
+  description:
+    This is API documentation for personal app.<br />**** THIS IS A WORK IN PROGRESS ****<br />
+      <a target="_blank" href="https://gitlab.com/antonymaciel.dx/personal-server">Repository</a>
+host: 'localhost:3000'
+schemes:
+  - http
+produces:
+   - application/json
+consumes:
+  - application/json
+paths:
+  /authentication/login:
+    get:
+      x-buildStatus: 'proposed'
+  /authentication/logout:
+    get:
+      x-buildStatus: 'proposed'
+  /users:
+    post:
+      summary: Create New User
+      operationId: post-user
+      responses:
+        '200':
+          description: User Created
+          schema:
+            $ref: '#/definitions/User'
+        '400':
+          description: Missing Required Information
+          schema:
+            type: 'null'
+        '409':
+          description: Email Already Taken
+          schema:
+            type: 'null'
+      description: Create a new user
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              firstName:
+                type: string
+              lastName:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
+              dateOfBirth:
+                type: string
+                format: date
+            required:
+              - firstName
+              - lastName
+              - email
+              - password
+              - dateOfBirth
+          description: Post the necessary fields for the API to create a new user.
+          x-examples:
+            Create User Bob Fellow:
+              firstName: Bob
+              lastName: Fellow
+              email: bob.fellow@gmail.com
+              password: '12345678'
+              dateOfBirth: '1996-08-24'
+  /pages:
+    get:
+      x-buildStatus: 'proposed'
+      summary: Get Pages.
+      tags: []
+      operationId: getPages
+      responses:
+        '200':
+          description: Pages
+          schema:
+            $ref: '#/definitions/PagesResponse'
+        '400':
+          $ref: '#/responses/badRequest'
+        '401':
+          $ref: '#/responses/unauthorized'
+        '403':
+          $ref: '#/responses/forbidden'
+        '406':
+          $ref: '#/responses/notAcceptable'
+        '404':
+          $ref: '#/responses/notFound'
+        '410':
+          $ref: '#/responses/gone'
+        '429':
+          $ref: '#/responses/rateLimited'
+        '500':
+          $ref: '#/responses/serverError'
+        '503':
+          $ref: '#/responses/serviceUnavailable'
+      description: Retrieve the information of the pages.
+      parameters: []
+      deprecated: false
+    post:
+      x-buildStatus: 'proposed'
+      summary: Create New Page
+      operationId: createPage
+      responses:
+        '200':
+          description: Page Created
+          schema:
+            $ref: '#/definitions/Page'
+        '400':
+          description: Missing Required Information
+          schema:
+            type: 'null'
+        '409':
+          description: Name Already Taken
+          schema:
+            type: 'null'
+      description: Create a new page.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            type: object
+            schema:
+              $ref: '#/definitions/Page'
+              required:
+                - name
+          description: Post the necessary fields for the API to create a new page.
+          x-example:
+            name: Sample Page
+  '/pages/{pageId}':
+    patch:
+      x-buildStatus: 'proposed'  
+      x-external: false
+      summary: 'Update an existing page'
+      description: 'Update the requested page.'
+      operationId: updatePage
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            type: object
+            schema:
+              $ref: '#/definitions/Page'
+          description: 'Information to update on the page.'
+          x-example:
+            name: Sample Page
+      responses:
+        '200':
+          description: Page Updated
+          schema:
+            $ref: '#/definitions/Page'
+        '400':
+          $ref: '#/responses/badRequest'
+        '401':
+          $ref: '#/responses/unauthorized'
+        '403':
+          $ref: '#/responses/forbidden'
+        '404':
+          $ref: '#/responses/notFound'
+        '410':
+          $ref: '#/responses/gone'
+        '415':
+          $ref: '#/responses/unsupportedMediaType'
+        '429':
+          $ref: '#/responses/rateLimited'
+        '500':
+          $ref: '#/responses/serverError'
+        '503':
+          $ref: '#/responses/serviceUnavailable'
+    delete:
+      x-buildStatus: 'proposed'
+      summary: Delete an existing page.
+      operationId: deletePage
+      responses:
+        '204':
+          $ref: '#/responses/deleted'
+        '400':
+          $ref: '#/responses/badRequest'
+        '401':
+          $ref: '#/responses/unauthorized'
+        '403':
+          $ref: '#/responses/forbidden'
+        '404':
+          $ref: '#/responses/notFound'
+        '410':
+          $ref: '#/responses/gone'
+        '415':
+          $ref: '#/responses/unsupportedMediaType'
+        '429':
+          $ref: '#/responses/rateLimited'
+        '500':
+          $ref: '#/responses/serverError'
+        '503':
+          $ref: '#/responses/serviceUnavailable'
+      description: Delete a page.
+      parameters: []
+      deprecated: false
+    parameters:
+      - $ref: '#/parameters/pageId'
+  /pages/{pageId}/sections:
+    get:
+      x-buildStatus: 'proposed'
+      summary: Get Page Sections.
+      tags: []
+      operationId: getPageSections
+      responses:
+        '200':
+          description: 'The list of requested page sections.'
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: '#/definitions/pagination'
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/PageSectionsResponse'
+                description: 'The requested page of project sections.'
+        '400':
+          $ref: '#/responses/badRequest'
+        '401':
+          $ref: '#/responses/unauthorized'
+        '403':
+          $ref: '#/responses/forbidden'
+        '406':
+          $ref: '#/responses/notAcceptable'
+        '404':
+          $ref: '#/responses/notFound'
+        '410':
+          $ref: '#/responses/gone'
+        '429':
+          $ref: '#/responses/rateLimited'
+        '500':
+          $ref: '#/responses/serverError'
+        '503':
+          $ref: '#/responses/serviceUnavailable'
+      description: Retrieve the information of the page sections.
+      parameters: []
+      deprecated: false
+    post:
+      x-buildStatus: 'proposed'
+      summary: Create New Page Section.
+      operationId: createPageSection
+      responses:
+        '200':
+          description: Page Section Created
+          schema:
+            $ref: '#/definitions/PageSection'
+        '400':
+          description: Missing Required Information
+          schema:
+            type: 'null'
+        '409':
+          description: Name Already Taken
+          schema:
+            type: 'null'
+      description: Create a new page section.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            type: object
+            schema:
+              $ref: '#/definitions/PageSection'
+              required:
+                - name
+                - position
+          description: Post the necessary fields for the API to create a new page section.
+          x-example:
+            name: Sample Page Section
+            position: 1
+    parameters:
+      - $ref: '#/parameters/pageId'
+  '/sections/{sectionId}':
+    patch:
+      x-buildStatus: 'proposed'  
+      x-external: false
+      summary: 'Update an existing section'
+      description: 'Update the requested section.'
+      operationId: updatePageSection
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            type: object
+            schema:
+              $ref: '#/definitions/PageSection'
+          description: Post the necessary fields for the API to create a new page section.
+          x-example:
+            name: Sample Page Section
+            position: 1
+      responses:
+        '200':
+          description: Page Section Created
+          schema:
+            $ref: '#/definitions/PageSection'
+        '400':
+          $ref: '#/responses/badRequest'
+        '401':
+          $ref: '#/responses/unauthorized'
+        '403':
+          $ref: '#/responses/forbidden'
+        '404':
+          $ref: '#/responses/notFound'
+        '410':
+          $ref: '#/responses/gone'
+        '415':
+          $ref: '#/responses/unsupportedMediaType'
+        '429':
+          $ref: '#/responses/rateLimited'
+        '500':
+          $ref: '#/responses/serverError'
+        '503':
+          $ref: '#/responses/serviceUnavailable'
+    delete:
+      x-buildStatus: 'proposed'
+      summary: Delete an existing page section.
+      operationId: deletePageSection
+      responses:
+        '204':
+          $ref: '#/responses/deleted'
+        '400':
+          $ref: '#/responses/badRequest'
+        '401':
+          $ref: '#/responses/unauthorized'
+        '403':
+          $ref: '#/responses/forbidden'
+        '404':
+          $ref: '#/responses/notFound'
+        '410':
+          $ref: '#/responses/gone'
+        '415':
+          $ref: '#/responses/unsupportedMediaType'
+        '429':
+          $ref: '#/responses/rateLimited'
+        '500':
+          $ref: '#/responses/serverError'
+        '503':
+          $ref: '#/responses/serviceUnavailable'
+      description: Delete a page section.
+      parameters: []
+      deprecated: false
+    parameters:
+      - $ref: '#/parameters/sectionId'
+# BEGIN: definitions
+definitions:
+  pagination:
+    description: 'The information for paginating requests.'
+    properties:
+      limit:
+        type: integer
+        minimum: 1
+        default: 20
+        readOnly: true
+        description: 'The number of results to include in the response.'
+        example: 20
+      offset:
+        type: integer
+        minimum: 0
+        default: 0
+        readOnly: true
+        description: 'The record number to start with.'
+        example: 10
+      totalResults:
+        type: integer
+        minimum: 0
+        readOnly: true
+        description: 'The total number of records.'
+        example: 121
+  User:
+    title: User
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Unique identifier for the given user.
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+        format: email
+      dateOfBirth:
+        type: string
+        format: date
+        example: '1997-10-31'
+      createDate:
+        type: string
+        format: date
+        description: The date that the user was created.
+    x-internal: false
+  Users:
+    title: Users
+    type: object
+    properties:
+      iddd:
+        type: string
+        description: Unique identifier for the given user.
+    required:
+      - iddd
+  Page:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+        description: 'The id of the page.'
+        example: 'd73fc742-4538-401c-8d0f-853b49b750b2'
+      name:
+        type: string
+        description: 'The name of the page.'
+        example: 'Home'
+      title:
+        type: string
+        description: 'Welcome to My Website.'
+        example: 'Home'
+      position: 
+        type: integer
+        description: 'The position of the page.'
+        example: 10
+      type:
+        type: string
+        enum:
+          - 'template'
+          - 'production'
+          - 'sample'
+        description: 'The type of the page.'
+        example: 'production'
+      order: 
+        type: integer
+        minimum: 1
+        description: 'The order of the page within the navigation.'
+        example: 5
+      size: 
+        type: integer
+        minimum: 1
+        default: 1
+        description: 'The amount of divitions of the page. It can be bigger than total sections to consider white spaces.'
+        example: 10
+      orientation:
+        type: string
+        enum:
+          - horizontal
+          - vertical
+    required:
+      - id
+      - name
+      - type
+  PagesResponse:
+    type: array
+    items:
+      $ref: '#/definitions/Page'
+    description: 'The requested pages.'
+  PageSection:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+        description: 'The id of the page.'
+        example: 'd73fc742-4538-401c-8d0f-853b49b750b2'
+      name:
+        type: string
+        description: 'The name of the section.'
+        example: 'Images'
+      title:
+        type: string
+        description: 'Title of the section.'
+        example: 'The images of the world'
+      position: 
+        type: integer
+        minimum: 1
+        description: 'The position of the section within the page.'
+        example: 10
+      orientation:
+        type: string
+        enum:
+          - horizontal
+          - vertical
+      elements: 
+        type: array
+        items:
+          $ref: '#/definitions/SectionElement'
+        description: 'The section elements.'
+    required:
+      - id
+      - name
+      - position
+      - elements
+  SectionElement:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+        description: 'The id of the element.'
+        example: 'd73fc742-4538-401c-8d0f-853b49b750b2'
+      type:
+        type: string
+        enum:
+          - 'image'
+          - 'video'
+          - 'text'
+          - 'link'
+        description: 'The type of the element.'
+        example: 'image'
+      position: 
+        type: integer
+        minimum: 1
+        description: 'The position of the element within the section.'
+        example: 10
+      value:
+        type: string
+        description: 'The content of the element.'
+    required:
+      - id
+      - type
+      - position
+      - value
+  PageSectionsResponse:
+    type: array
+    items:
+      $ref: '#/definitions/PageSection'
+    description: 'The requested page sections.'
+  error:
+    description: 'Basic error response.'
+    properties:
+      status:
+        type: integer
+        description: 'The status code for the error.'
+        example: 404
+      type:
+        type: string
+        description: 'HQ defined error code for the type of error.'
+        example: 'ACC-AA-GN-001'
+      title:
+        type: string
+        description: 'The title of the error. ex: Bad Request.'
+        example: 'Not Found'
+      detail:
+        type: string
+        description: 'A detailed description of the error with possible suggestions for fixing them.'
+        example: 'Requested resource not found'
+      id:
+        type: string
+        description: 'A unique id for the request.'
+        example: '075d9d83e8d32e49'
+  validationError:
+    description: 'Error response with field validation errors.'
+    properties:
+      status:
+        type: integer
+        description: 'The status code for the error.'
+        example: 400
+      type:
+        type: string
+        description: 'HQ defined error code for the type of error.'
+        example: 'ACC-AA-PR-001'
+      title:
+        type: string
+        description: 'The title of the error. ex: Bad Request.'
+        example: 'Bad Request'
+      detail:
+        type: string
+        description: 'A detailed description of the error with possible suggestions for fixing them.'
+        example: 'Check errors array'
+      id:
+        type: string
+        description: 'A unique id for the request.'
+        example: '075d9d83e8d32e49'
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/fieldError'
+        description: 'List of field validation errors.'
+  fieldError:
+    description: 'Error description for a field validation error.'
+    properties:
+      type:
+        type: string
+        description: 'HQ defined error code for the type of error.'
+        example: 'ACC-AA-PR-002'
+      field:
+        type: string
+        description: 'Name of the field associated to the error.'
+        example: 'endDate'
+      title:
+        type: string
+        description: 'Title for the error.'
+        example: 'Invalid value'
+      detail:
+        type: string
+        description: 'A detailed description of the error so the user knows how to fix it.'
+        example: 'endDate can not be before startDate.'
+# END: definitions
+# BEGIN: parameters
+parameters:
+  pageId:
+    name: pageId
+    in: path
+    type: string
+    format: uuid
+    required: true
+    description: 'The page ID.'
+    x-example: '367d5cc2-9008-462c-96e5-c9491db85d93'
+  sectionId:
+    name: sectionId
+    in: path
+    type: string
+    format: uuid
+    required: true
+    description: 'The section ID.'
+    x-example: '367d5cc2-9008-462c-96e5-c9491db85d93'
+# END: parameters
+# BEGIN: responses
+responses:
+  accepted:
+    description: 'The request has been received but not yet acted upon.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+    schema:
+      properties:
+        jobId:
+          type: string
+          format: uuid
+          description: 'Id of the job that is processing the request.'
+          example: 'fa976214-f1fb-4795-a152-04ad20fa7310'
+  badRequest:
+    description: 'The request could not be understood by the server due to malformed syntax.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+    schema:
+      $ref: '#/definitions/validationError'
+  conflict:
+    description: 'The request could not be completed due to a conflict with the current state of the resource.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+    schema:
+      $ref: '#/definitions/validationError'
+  deleted:
+    description: 'The request has succeeded, no content returned.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+  forbidden:
+    description: 'The server understood the request but refuses to authorize it.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+    schema:
+      $ref: '#/definitions/error'
+  gone:
+    description: 'Access to the target resource is no longer available.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+    schema:
+      $ref: '#/definitions/error'
+  noContent:
+    description: 'The request has succeeded, no content returned.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+  notFound:
+    description: 'The resource cannot be found.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+    schema:
+      $ref: '#/definitions/error'
+  notAcceptable:
+    description: 'The server cannot produce a response matching the list of acceptable values defined in the request.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+    schema:
+      $ref: '#/definitions/error'
+  rateLimited:
+    description: 'User has sent too many requests in a given amount of time.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+  serverError:
+    description: 'An unexpected error occurred on the server.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+    schema:
+      $ref: '#/definitions/error'
+  serviceUnavailable:
+    description: 'Server is not ready to handle the request.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+    schema:
+      $ref: '#/definitions/error'
+  unauthorized:
+    description: 'Request has not been applied because it lacks valid authentication credentials for the target resource.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+      WWW-Authenticate:
+        description: 'defines the authentication method.  Should be ``Bearer``.'
+        type: string
+    schema:
+      allOf:
+        - properties:
+            authenticationUrl:
+              type: string
+              description: 'The url used for authenticating the user.'
+              example: 'https://login.acc.autodesk.com'
+        - $ref: '#/definitions/error'
+  unsupportedMediaType:
+    description: 'The server refuses to accept the request because the payload format is in an unsupported format.'
+    headers:
+      Request-Id:
+        description: 'Unique id for the request which can be provided when reporting issues to assist in facilitating improved research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+    schema:
+      $ref: '#/definitions/error'
+  preconditionFailed:
+    description: 'The server refuses to accept the request because a pre-condition failed.'
+    headers:
+      Request-Id:
+        description: 'Unique request ID to facilitate reporting and research.'
+        type: string
+      Response-Time:
+        description: 'Time taken to generate response.'
+        type: string
+    schema:
+      $ref: '#/definitions/error'
+# END: responses
+securityDefinitions: {}

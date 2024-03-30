@@ -1,0 +1,52 @@
+version: '3.5'
+
+# Base configs
+x-build: &default-build
+  dockerfile: ./Dockerfile
+
+x-networks: &default-network
+  - personal
+
+x-service: &default-service
+  build: *default-build
+  platform: linux/amd64
+  image: personal_image
+  networks: *default-network
+
+services:
+  app:
+    <<: *default-service
+    environment:
+      - APP_PORT=$APP_PORT
+      - JWT_SECRET=$JWT_SECRET
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_HOST=$DB_HOST
+      - DB_DATABASE=$DB_DATABASE
+      - DB_PORT=$DB_PORT
+    volumes:
+      - ./server/.:/usr/local/personal/server
+      - ./shared/.:/usr/local/personal/shared
+      - ./migrations/.:/usr/local/personal/migrations
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
+    depends_on:
+      - db-postgres
+  db-postgres:
+    image: postgres:10.11-alpine
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    volumes:
+      - api-postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_DATABASE
+    networks: *default-network
+
+networks:
+  personal:
+    name: personal-network
+
+volumes:
+  api-postgres-data:
